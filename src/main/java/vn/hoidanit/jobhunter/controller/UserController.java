@@ -75,8 +75,8 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public User updateUser(@RequestBody User user) {
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
         User updateUser = this.userService.handleUpdateUser(user);
-        return updateUser;
+        return ResponseEntity.ok(updateUser);
     }
 }
