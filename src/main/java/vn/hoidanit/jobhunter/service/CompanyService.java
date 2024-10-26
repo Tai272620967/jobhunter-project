@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.repository.CompanyRepositoty;
 import vn.hoidanit.jobhunter.domain.Company;
-import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 
 @Service
 public class CompanyService {
