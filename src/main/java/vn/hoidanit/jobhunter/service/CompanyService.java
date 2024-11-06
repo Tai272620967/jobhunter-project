@@ -1,6 +1,7 @@
 package vn.hoidanit.jobhunter.service;
 
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,16 +9,20 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.repository.CompanyRepositoty;
+import vn.hoidanit.jobhunter.repository.UserRepositoty;
 import vn.hoidanit.jobhunter.domain.Company;
+import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 
 @Service
 public class CompanyService {
     
     private final CompanyRepositoty companyRepositoty;
+    private final UserRepositoty userRepositoty;
 
-    public CompanyService(CompanyRepositoty companyRepositoty) {
+    public CompanyService(CompanyRepositoty companyRepositoty, UserRepositoty userRepositoty) {
         this.companyRepositoty = companyRepositoty;
+        this.userRepositoty = userRepositoty;
     }
 
     public Company handleCreateCompany(Company company) {
@@ -57,6 +62,18 @@ public class CompanyService {
     }
 
     public void handleDeleteCompany(long id) {
+        Optional<Company> comOptional = this.companyRepositoty.findById(id);
+        if (comOptional.isPresent()) {
+            Company com = comOptional.get();
+            // fetch all user belong to this company
+            List<User> users = this.userRepositoty.findByCompany(com);
+            this.userRepositoty.deleteAll(users);
+        }
+        
         this.companyRepositoty.deleteById(id);
+    }
+
+    public Optional<Company> findById(long id) {
+       return this.companyRepositoty.findById(id);
     }
 }
