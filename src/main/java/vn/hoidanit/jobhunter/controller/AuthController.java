@@ -58,8 +58,8 @@ public class AuthController {
         if (currentUserDB != null) {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                 currentUserDB.getId(),
-                currentUserDB.getEmail(),
-                currentUserDB.getName()
+                currentUserDB.getEmail()
+                // currentUserDB.getName()
             );
             res.setUser(userLogin);
         }
@@ -101,7 +101,7 @@ public class AuthController {
         if (currentUserDB != null) {
             userLogin.setId(currentUserDB.getId());
             userLogin.setEmail(currentUserDB.getEmail());
-            userLogin.setName(currentUserDB.getName());
+            // userLogin.setName(currentUserDB.getName());
             userGetAccount.setUser(userLogin);
         }
         return ResponseEntity.ok().body(userGetAccount);
@@ -128,8 +128,8 @@ public class AuthController {
         if (currentUserDB != null) {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                 currentUserDB.getId(),
-                currentUserDB.getEmail(),
-                currentUserDB.getName()
+                currentUserDB.getEmail()
+                // currentUserDB.getName()
             );
             res.setUser(userLogin);
         }

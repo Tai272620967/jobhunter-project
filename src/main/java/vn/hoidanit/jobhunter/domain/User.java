@@ -1,6 +1,8 @@
 package vn.hoidanit.jobhunter.domain;
 
+import java.sql.Date;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +31,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String name;
+    private String firstName;
+    private String lastName;
+    private String kataFirstName;
+    private String kataLastName;
+    private String address1;
+    private String address2;
+    private String address3;
+    private String address4;
+    private String phone;
+    private Date birthday;
 
     @NotBlank(message = "email không được để trống")
     private String email;
@@ -37,24 +48,25 @@ public class User {
     @NotBlank(message = "password không được để trống")
     private String password;
 
-    private int age;
-
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
 
-    private String address;
-
     @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
+
+    private Boolean IsEmailVerified = false;
+
+    private String verifyCode;
+    private LocalDateTime codeExpiry;
     
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    // @ManyToOne
+    // @JoinColumn(name = "company_id")
+    // private Company company;
 
     @PrePersist
     public void handleBeforeCreate() {

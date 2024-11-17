@@ -1,0 +1,82 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Template</title>
+    <style>
+        .short-border {
+            border-top: 2px solid black;
+            width: 20%;
+        }
+        p {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="registration-mail-body">
+            <p>MUJI.netメンバーへの会員登録をお申し込みいただきありがとうございます。</p>
+            <p>以下のコードを認証コード入力画面で入力してください。.</p>
+            <p>認証コード：${otpCode}</p>
+            <p>●ご注意事項</p>
+            <p>有効期限は認証コードのメール送付から30分です。</p>
+            <p>期限切れになった場合は認証コードを再送してお手続きください。</p>
+            <p>※メールアドレスの入力をされた覚えのない場合、下記お問い合わせよりご連絡をお願いいたします。</p>
+        </div>
+        <div class="short-border"></div>
+        <div class="registration-mail-footer">
+            <p>無印良品ネットストア</p>
+            <p>■お問い合わせ</p>
+            <span><a href="https://faq.muji.com/">https://faq.muji.com/</a></span>
+            <p>※本メールに返信いただいてもご返答することができません。お問い合わせは上記URLよりご連絡ください。</p>
+            <p>発行：株式会社良品計画</p>
+            <p>〒112-0004 東京都文京区後楽2丁目5−1</p>
+            <p>(c) Ryohin Keikaku Co., Ltd.</p>
+        </div>
+        <div class="short-border"></div>
+    </div>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Template</title>
+    <style>
+        .short-border {
+            border-top: 2px solid black;
+            width: 20%;
+        }
+        p {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="registration-mail-body">
+            <p>MUJI.netメンバーへの会員登録をお申し込みいただきありがとうございます。</p>
+            <p>以下のコードを認証コード入力画面で入力してください。</p>
+            <!-- <p>認証コード：<strong>${otpCode}</strong></p> Hiển thị mã OTP -->
+            <p>認証コード：<strong th:text="${otpCode}"></strong></p>
+            <p>●ご注意事項</p>
+            <p>有効期限は認証コードのメール送付から30分です。</p>
+            <p>期限切れになった場合は認証コードを再送してお手続きください。</p>
+            <p>※メールアドレスの入力をされた覚えのない場合、下記お問い合わせよりご連絡をお願いいたします。</p>
+        </div>
+        <div class="short-border"></div>
+        <div class="registration-mail-footer">
+            <p>無印良品ネットストア</p>
+            <p>■お問い合わせ</p>
+            <span><a href="https://faq.muji.com/">https://faq.muji.com/</a></span>
+            <p>※本メールに返信いただいてもご返答することができません。お問い合わせは上記URLよりご連絡ください。</p>
+            <p>発行：株式会社良品計画</p>
+            <p>〒112-0004 東京都文京区後楽2丁目5−1</p>
+            <p>(c) Ryohin Keikaku Co., Ltd.</p>
+        </div>
+        <div class="short-border"></div>
+    </div>
+</body>
+</html>

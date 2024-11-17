@@ -14,19 +14,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import vn.hoidanit.jobhunter.domain.OtpVerification;
 import vn.hoidanit.jobhunter.domain.User;
+import vn.hoidanit.jobhunter.domain.request.SendMailDTO;
+import vn.hoidanit.jobhunter.domain.request.VerifyCodeDTO;
 import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResVerifyEmail;
+import vn.hoidanit.jobhunter.domain.response.ResVerifyOtp;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.anotation.ApiMessage;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
+import vn.hoidanit.jobhunter.service.EmailService;
+import vn.hoidanit.jobhunter.service.OtpVerifycationService;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -36,12 +48,18 @@ public class UserController {
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    private final EmailService emailService;
+
+    private final OtpVerifycationService otpVerifycationService;
+
+    public UserController(UserService userService, PasswordEncoder passwordEncoder, EmailService emailService, OtpVerifycationService otpVerifycationService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
+        this.otpVerifycationService = otpVerifycationService;
     }
 
-    @PostMapping("/users")
+    @PostMapping("/users/register")
     @ApiMessage("Create a new user")
     public ResponseEntity<ResCreateUserDTO> createNewUser(@Valid @RequestBody User postManUser) throws IdInvalidException {
         boolean isEmailExist = this.userService.isEmailExist(postManUser.getEmail());
@@ -95,5 +113,53 @@ public class UserController {
             throw new IdInvalidException("User với id = " + user.getId() + " không tồn tại");
         }
         return ResponseEntity.ok(this.userService.convertToResUpdateUserDTO(updateUser));
+    }
+
+    @PostMapping("/users/checkRegistMailAddress")
+    @ApiMessage("Check mail address")
+    public ResponseEntity<ResVerifyEmail> checkRegistMailAddress(@Valid @RequestBody SendMailDTO emailRequest) throws IdInvalidException {
+        boolean isEmailExist = this.userService.isEmailExist(emailRequest.getTo());
+        if (isEmailExist) {
+            throw new IdInvalidException(
+                "入力されたメールアドレスは既に登録済みです。");
+        } else {
+            try {
+                Map<String, Object> model = new HashMap<>();
+                model.put("name", "Người dùng");
+                emailService.sendHtmlEmail(emailRequest.getTo(), emailRequest.getSubject());
+                // return ResponseEntity.ok("Email đã được gửi thành công!");
+                return ResponseEntity.status(HttpStatus.OK).body(new ResVerifyEmail("メールアドレスが確認されました。コードが送信されましたので、ご確認ください。", true));
+            } catch (MessagingException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                    .body(new ResVerifyEmail("Lỗi khi gửi email: " + e.getMessage(), false));
+            }
+        }
+    }
+
+    @PostMapping("/users/checkVerifyCode")
+    @ApiMessage("Check verify code")
+    public ResponseEntity<ResVerifyOtp> checkVerifyCode(@Valid @RequestBody VerifyCodeDTO verifyCodeRequest) throws IdInvalidException {
+        String email = verifyCodeRequest.getEmail();
+        String inputCode = verifyCodeRequest.getVerifyCode();
+        System.out.println("inputCode" + inputCode);
+
+        // Kiểm tra người dùng có tồn tại hay không
+        OtpVerification otpVerification = otpVerifycationService.handleFindByEmail(email);
+        System.out.println("otpVerification: " + otpVerification.getOtpCode());
+        if (otpVerification == null) {
+            throw new IdInvalidException("Email không tồn tại.");
+        }
+
+        // Kiểm tra mã xác minh và thời gian hết hạn
+        if (otpVerification.getOtpCode() == null || !otpVerification.getOtpCode().equals(inputCode)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResVerifyOtp("確認コードが正しくありません！", false));
+        }
+
+        if (otpVerification.getExpiryTime() != null && otpVerification.getExpiryTime().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResVerifyOtp("確認コードの有効期限が切れました。", false));
+        }
+        this.otpVerifycationService.handleUpdateOtpVerification(otpVerification);
+        
+        return ResponseEntity.status(HttpStatus.OK).body(new ResVerifyOtp("コードの確認に成功しました！", true));
     }
 }
