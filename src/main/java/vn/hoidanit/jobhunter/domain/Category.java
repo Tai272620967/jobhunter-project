@@ -26,6 +26,8 @@ public class Category {
     @NotBlank(message = "category name is not empty")
     private String name;
 
+    private Long parentId;
+
     private String imageUrl;
 
     private Instant createdAt;

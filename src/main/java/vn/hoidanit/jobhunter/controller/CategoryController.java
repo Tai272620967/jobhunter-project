@@ -26,15 +26,22 @@ public class CategoryController {
     }
 
     @PostMapping("/categories")
-    public ResponseEntity<Category> createCompany(@RequestBody Category category) {
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.categoryService.handleCreateCategory(category));
     }
 
-    @GetMapping("/categories")
-    public ResponseEntity<ResultPaginationDTO> getAllCategory(
+    @GetMapping("/main-categories")
+    public ResponseEntity<ResultPaginationDTO> getAllMainCategory(
         @Filter Specification<Category> spec, Pageable pageable
     ) {
-        return ResponseEntity.ok(this.categoryService.handleGetAllCategory(spec, pageable));
+        return ResponseEntity.ok(this.categoryService.handleGetAllMainCategory(spec, pageable));
+    }
+
+    @GetMapping("/sub-categories")
+    public ResponseEntity<ResultPaginationDTO> getAllSubCategory(
+        @Filter Specification<Category> spec, Pageable pageable
+    ) {
+        return ResponseEntity.ok(this.categoryService.handleGetAllSubCategory(spec, pageable));
     }
     
 }

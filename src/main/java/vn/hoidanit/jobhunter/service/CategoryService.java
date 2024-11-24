@@ -22,8 +22,44 @@ public class CategoryService {
         return this.categoryRepository.save(category);
     }
 
-    public ResultPaginationDTO handleGetAllCategory(Specification<Category> spec, Pageable pageable) {
-        Page<Category> pCategory = this.categoryRepository.findAll(spec, pageable);
+    public ResultPaginationDTO handleGetAllSubCategory(Specification<Category> spec, Pageable pageable) {
+        // Page<Category> pCategory = this.categoryRepository.findAll(spec, pageable);
+        // Sử dụng Specification để kiểm tra parentId khác null
+        Specification<Category> parentIdNotNullSpec = (root, query, criteriaBuilder) -> 
+            criteriaBuilder.isNotNull(root.get("parentId"));
+        
+        // Kết hợp các Specification
+        Specification<Category> combinedSpec = spec.and(parentIdNotNullSpec);
+
+        // Truy vấn với Specification kết hợp và phân trang
+        Page<Category> pCategory = this.categoryRepository.findAll(combinedSpec, pageable);
+        
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+
+        mt.setPage(pCategory.getNumber() + 1);
+        mt.setPageSize(pCategory.getSize());
+
+        mt.setPages(pCategory.getTotalPages());
+        mt.setTotal(pCategory.getTotalElements());
+
+        rs.setMeta(mt);
+        rs.setResult(pCategory.getContent());
+        
+        return rs;
+    }
+
+    public ResultPaginationDTO handleGetAllMainCategory(Specification<Category> spec, Pageable pageable) {
+        // Page<Category> pCategory = this.categoryRepository.findAll(spec, pageable);
+        Specification<Category> parentIdNotNullSpec = (root, query, criteriaBuilder) -> 
+            criteriaBuilder.isNull(root.get("parentId"));
+        
+        // Kết hợp các Specification
+        Specification<Category> combinedSpec = spec.and(parentIdNotNullSpec);
+
+        // Truy vấn với Specification kết hợp và phân trang
+        Page<Category> pCategory = this.categoryRepository.findAll(combinedSpec, pageable);
+        
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 

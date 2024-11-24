@@ -140,6 +140,7 @@ public class UserController {
     @ApiMessage("Check verify code")
     public ResponseEntity<ResVerifyOtp> checkVerifyCode(@Valid @RequestBody VerifyCodeDTO verifyCodeRequest) throws IdInvalidException {
         String email = verifyCodeRequest.getEmail();
+        System.out.println("email for verify code" + email);
         String inputCode = verifyCodeRequest.getVerifyCode();
         System.out.println("inputCode" + inputCode);
 
