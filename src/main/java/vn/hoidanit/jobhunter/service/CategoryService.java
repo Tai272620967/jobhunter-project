@@ -1,24 +1,41 @@
 package vn.hoidanit.jobhunter.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.domain.Category;
+import vn.hoidanit.jobhunter.domain.MainCategory;
+import vn.hoidanit.jobhunter.domain.SubCategory;
+import vn.hoidanit.jobhunter.domain.request.CategoryDTO;
+import vn.hoidanit.jobhunter.domain.response.ResCategoryDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.repository.CategoryRepository;
+import vn.hoidanit.jobhunter.repository.SubCategoryRepository;
 
 @Service
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final SubCategoryRepository subCategoryRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, SubCategoryRepository subCategoryRepository) {
         this.categoryRepository = categoryRepository;
+        this.subCategoryRepository = subCategoryRepository;
     }
 
-    public Category handleCreateCategory(Category category) {
+    public Category handleCreateCategory(CategoryDTO categoryRequest) {
+        SubCategory subCategory = this.subCategoryRepository.findById(categoryRequest.getSubCategoryId())
+            .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + categoryRequest.getSubCategoryId()));
+
+        Category category = new Category();
+        category.setName(categoryRequest.getName());
+        category.setImageUrl(categoryRequest.getImageUrl());
+        category.setSubCategory(subCategory);
         return this.categoryRepository.save(category);
     }
 
@@ -73,5 +90,13 @@ public class CategoryService {
         rs.setResult(pCategory.getContent());
         
         return rs;
+    }
+
+    public Optional<Category> handleGetCategoryById(long categoryId) {
+        return this.categoryRepository.findById(categoryId);
+    }
+
+    public List<Category> handleGetCategoriesBySubCategoryId(long subCategoryId) {
+        return this.categoryRepository.findBySubCategory_Id(subCategoryId);
     }
 }
