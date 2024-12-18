@@ -9,10 +9,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.domain.Category;
-import vn.hoidanit.jobhunter.domain.MainCategory;
 import vn.hoidanit.jobhunter.domain.SubCategory;
 import vn.hoidanit.jobhunter.domain.request.CategoryDTO;
-import vn.hoidanit.jobhunter.domain.response.ResCategoryDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.repository.CategoryRepository;
 import vn.hoidanit.jobhunter.repository.SubCategoryRepository;

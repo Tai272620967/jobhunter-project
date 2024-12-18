@@ -22,6 +22,16 @@ public class ProductDTO {
 
     @NotNull(message = "Category ID is required")
     private Long categoryId;
+    
+    // Constructor mới với các tham số
+    public ProductDTO(String name, BigDecimal minPrice, BigDecimal maxPrice, String description, Integer stockQuantity, Long categoryId) {
+        this.name = name;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
+        this.description = description;
+        this.stockQuantity = stockQuantity;
+        this.categoryId = categoryId;
+    }
 
     public String getName() {
         return name;

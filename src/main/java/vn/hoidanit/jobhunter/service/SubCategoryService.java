@@ -54,7 +54,7 @@ public class SubCategoryService {
         return rs;
     }
 
-    public List<SubCategory> handleFindByMainCategoryId(Long mainCategoryId) {
+    public List<SubCategory> handleFindByMainCategoryId(long mainCategoryId) {
         return this.subCategoryRepository.findByMainCategory_Id(mainCategoryId);
     }
 

@@ -45,17 +45,5 @@ public class CategoryController {
         return this.categoryService.handleGetCategoriesBySubCategoryId(id);
     }
 
-    // @GetMapping("/main-categories")
-    // public ResponseEntity<ResultPaginationDTO> getAllMainCategory(
-    //     @Filter Specification<Category> spec, Pageable pageable
-    // ) {
-    //     return ResponseEntity.ok(this.categoryService.handleGetAllMainCategory(spec, pageable));
-    // }
-
-    // @GetMapping("/sub-categories")
-    // public ResponseEntity<ResultPaginationDTO> getAllSubCategory(
-    //     @Filter Specification<Category> spec, Pageable pageable
-    // ) {
-    //     return ResponseEntity.ok(this.categoryService.handleGetAllSubCategory(spec, pageable));
-    // }
+    // @GetMapping
 }

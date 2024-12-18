@@ -1,5 +1,6 @@
 package vn.hoidanit.jobhunter.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
@@ -42,6 +43,11 @@ public class SubCategoryController {
         @Filter Specification<SubCategory> spec, Pageable pageable
     ) {
         return ResponseEntity.ok(this.subCategoryService.handleGetAllSubCategory(spec, pageable));
+    }
+
+    @GetMapping("sub-categories/main-category/{id}")
+    public List<SubCategory> getCategoriesByMainCategoryId(@PathVariable("id") long id) {
+        return this.subCategoryService.handleFindByMainCategoryId(id);
     }
 
     @GetMapping("sub-categories/{id}")
